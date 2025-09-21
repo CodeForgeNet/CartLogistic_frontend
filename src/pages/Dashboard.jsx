@@ -101,10 +101,8 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <h1>Logistics Dashboard</h1>
-
-      <div className="summary-cards">
-        <div className="summary-card">
-          <h2>Drivers</h2>
+      <div className="dashboard-content">
+        <div className="summary-cards">
           <div className="summary-card">
             <h2>Drivers</h2>
             <div className="summary-value">{summary.totalDrivers}</div>
@@ -112,7 +110,6 @@ export default function Dashboard() {
               Manage Drivers
             </Link>
           </div>
-
           <div className="summary-card">
             <h2>Routes</h2>
             <div className="summary-value">{summary.totalRoutes}</div>
@@ -120,7 +117,6 @@ export default function Dashboard() {
               Manage Routes
             </Link>
           </div>
-
           <div className="summary-card">
             <h2>Orders</h2>
             <div className="summary-value">{summary.totalOrders}</div>
@@ -129,14 +125,12 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
-
         {latestSimulation ? (
           <div className="latest-simulation">
             <h2>Latest Simulation Results</h2>
             <div className="timestamp">
               Run on: {new Date(latestSimulation.createdAt).toLocaleString()}
             </div>
-
             <div className="kpi-cards">
               <div className="kpi-card">
                 <h3>Total Profit</h3>

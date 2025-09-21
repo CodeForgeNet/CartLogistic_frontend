@@ -36,6 +36,18 @@ export default function Drivers() {
   };
 
   const onSubmit = async (data) => {
+    // Process past7DayHoursInput
+    if (data.past7DayHoursInput) {
+      data.past7DayHours = data.past7DayHoursInput.split(',').map(Number);
+      delete data.past7DayHoursInput;
+    } else {
+      data.past7DayHours = []; // Ensure it's an empty array if no input
+    }
+
+    // Ensure isActive is a boolean
+    // This is a fallback, as the input field should ideally handle this
+    data.isActive = !!data.isActive;
+
     try {
       if (editing) {
         // Update existing driver
@@ -146,7 +158,7 @@ export default function Drivers() {
 
             <div className="form-group">
               <label htmlFor="isActive">Active</label>
-              <input id="isActive" type="checkbox" {...register("isActive")} />
+              <input id="isActive" type="checkbox" {...register("isActive", { valueAsBoolean: true })} />
             </div>
 
             <div className="form-group">
