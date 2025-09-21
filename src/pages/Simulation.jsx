@@ -1,4 +1,3 @@
-// src/pages/Simulation.jsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { runSimulation } from "../api";
@@ -14,7 +13,6 @@ import {
   Title,
 } from "chart.js";
 
-// Register Chart.js components
 Chart.register(
   ArcElement,
   Tooltip,
@@ -56,7 +54,6 @@ export default function Simulation() {
     }
   };
 
-  // Prepare chart data for on-time vs late deliveries
   const prepareDeliveryChartData = () => {
     if (!result) return null;
 
@@ -76,7 +73,6 @@ export default function Simulation() {
     };
   };
 
-  // Prepare chart data for fuel cost breakdown
   const prepareFuelCostChartData = () => {
     if (!result) return null;
 

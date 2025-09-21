@@ -1,4 +1,3 @@
-// src/App.jsx (updated)
 import {
   BrowserRouter,
   Routes as RouterRoutes,
@@ -12,9 +11,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Simulation from "./pages/Simulation";
 import Drivers from "./pages/Drivers";
-import Routes from "./pages/Routes"; // This is our routes management component
+import Routes from "./pages/Routes";
 import Orders from "./pages/Orders";
-import SimulationDetails from "./pages/SimulationDetails"; // Import the new component
+import SimulationDetails from "./pages/SimulationDetails";
 import "./App.css";
 
 function App() {
@@ -46,7 +45,7 @@ function App() {
               />
 
               <Route
-                path="/simulation/:id" // New route for simulation details
+                path="/simulation/:id"
                 element={
                   <PrivateRoute>
                     <SimulationDetails />

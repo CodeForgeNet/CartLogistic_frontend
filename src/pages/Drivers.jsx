@@ -1,4 +1,3 @@
-// src/pages/Drivers.jsx
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getDrivers, createDriver, updateDriver, deleteDriver } from "../api";
@@ -19,15 +18,13 @@ export default function Drivers() {
     formState: { errors },
   } = useForm();
 
-  // Load drivers data
   useEffect(() => {
     fetchDrivers();
   }, []);
 
-  // Scroll to form when showForm becomes true
   useEffect(() => {
     if (showForm && formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [showForm]);
 
@@ -45,39 +42,33 @@ export default function Drivers() {
   };
 
   const onSubmit = async (data) => {
-    // Process past7DayHoursInput
     if (data.past7DayHoursInput) {
-      data.past7DayHours = data.past7DayHoursInput.split(',').map(Number);
+      data.past7DayHours = data.past7DayHoursInput.split(",").map(Number);
       delete data.past7DayHoursInput;
     } else {
-      data.past7DayHours = []; // Ensure it's an empty array if no input
+      data.past7DayHours = [];
     }
 
-    // Ensure isActive is a boolean
-    // This is a fallback, as the input field should ideally handle this
     data.isActive = !!data.isActive;
 
     try {
       if (editing) {
-        // Remove _id from data for update operation
         delete data._id;
-        // Remove __v from data for update operation
+
         delete data.__v;
-        // Update existing driver
+
         await updateDriver(editing._id, data);
         setDrivers(
           drivers.map((d) => (d._id === editing._id ? { ...d, ...data } : d))
         );
         setEditing(null);
       } else {
-        // Create new driver
         const response = await createDriver(data);
         setDrivers([...drivers, response.data]);
       }
 
-      fetchDrivers(); // Re-fetch and re-sort the drivers
+      fetchDrivers();
 
-      // Reset form
       reset();
       setShowForm(false);
     } catch (err) {
@@ -92,10 +83,12 @@ export default function Drivers() {
 
   const handleEdit = (driver) => {
     setEditing(driver);
-    // Prepare driver data for form, converting past7DayHours array to a comma-separated string
+
     const formData = {
       ...driver,
-      past7DayHoursInput: driver.past7DayHours ? driver.past7DayHours.join(',') : '',
+      past7DayHoursInput: driver.past7DayHours
+        ? driver.past7DayHours.join(",")
+        : "",
     };
     reset(formData);
     setShowForm(true);
@@ -182,7 +175,11 @@ export default function Drivers() {
 
             <div className="form-group">
               <label htmlFor="isActive">Active</label>
-              <input id="isActive" type="checkbox" {...register("isActive", { valueAsBoolean: true })} />
+              <input
+                id="isActive"
+                type="checkbox"
+                {...register("isActive", { valueAsBoolean: true })}
+              />
             </div>
 
             <div className="form-group">

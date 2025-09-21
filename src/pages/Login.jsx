@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -15,7 +14,6 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  // Get the page they were trying to visit
   const from = location.state?.from?.pathname || "/dashboard";
 
   const onSubmit = async (data) => {

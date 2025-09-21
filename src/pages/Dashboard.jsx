@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getLatestSimulation, getDrivers, getOrders, getRoutes } from "../api";
@@ -14,7 +13,6 @@ import {
   Title,
 } from "chart.js";
 
-// Register Chart.js components
 Chart.register(
   ArcElement,
   Tooltip,
@@ -39,11 +37,9 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch the latest simulation result
         const simulationResponse = await getLatestSimulation();
         setLatestSimulation(simulationResponse.data);
 
-        // Fetch summary data
         const [driversRes, ordersRes, routesRes] = await Promise.all([
           getDrivers(),
           getOrders(),
@@ -66,7 +62,6 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Prepare delivery performance chart data
   const prepareDeliveryChartData = () => {
     if (!latestSimulation) return null;
 
@@ -87,7 +82,6 @@ export default function Dashboard() {
     };
   };
 
-  // Prepare fuel cost breakdown chart data
   const prepareFuelCostChartData = () => {
     if (!latestSimulation) return null;
 
@@ -201,47 +195,50 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Order Details Table (inside latest-simulation) */}
-            {latestSimulation.perOrder && latestSimulation.perOrder.length > 0 && (
-              <div className="order-details-section">
-                <h3>Simulation Order Details</h3>
-                <table className="orders-table">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Value (₹)</th>
-                      <th>Driver</th>
-                      <th>Status</th>
-                      <th>Profit (₹)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {latestSimulation.perOrder.slice(0, 5).map((order) => (
-                      <tr key={order.orderId}>
-                        <td>{order.orderId}</td>
-                        <td>{order.valueRs}</td>
-                        <td>{order.assignedDriver}</td>
-                        <td>
-                          <span
-                            className={
-                              order.onTime ? "status-on-time" : "status-late"
-                            }
-                          >
-                            {order.onTime ? "On Time" : "Late"}
-                          </span>
-                        </td>
-                        <td>{order.profit.toFixed(2)}</td>
+            {latestSimulation.perOrder &&
+              latestSimulation.perOrder.length > 0 && (
+                <div className="order-details-section">
+                  <h3>Simulation Order Details</h3>
+                  <table className="orders-table">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Value (₹)</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>Profit (₹)</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {latestSimulation.perOrder.length > 5 && (
-                  <Link to={`/simulation/${latestSimulation._id}`} className="button view-all-button">
-                    View All Orders
-                  </Link>
-                )}
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {latestSimulation.perOrder.slice(0, 5).map((order) => (
+                        <tr key={order.orderId}>
+                          <td>{order.orderId}</td>
+                          <td>{order.valueRs}</td>
+                          <td>{order.assignedDriver}</td>
+                          <td>
+                            <span
+                              className={
+                                order.onTime ? "status-on-time" : "status-late"
+                              }
+                            >
+                              {order.onTime ? "On Time" : "Late"}
+                            </span>
+                          </td>
+                          <td>{order.profit.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {latestSimulation.perOrder.length > 5 && (
+                    <Link
+                      to={`/simulation/${latestSimulation._id}`}
+                      className="button view-all-button"
+                    >
+                      View All Orders
+                    </Link>
+                  )}
+                </div>
+              )}
 
             <Link to="/simulation" className="button run-new-button">
               Run New Simulation

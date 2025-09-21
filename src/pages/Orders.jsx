@@ -1,4 +1,3 @@
-// src/pages/Orders.jsx
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -16,7 +15,7 @@ export default function Orders() {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const formRef = useRef(null); // Create a ref for the form
+  const formRef = useRef(null);
 
   const {
     register,
@@ -25,7 +24,6 @@ export default function Orders() {
     formState: { errors },
   } = useForm();
 
-  // Load orders data
   useEffect(() => {
     fetchData();
   }, []);
@@ -33,7 +31,6 @@ export default function Orders() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch both orders and routes
       const [ordersRes, routesRes] = await Promise.all([
         getOrders(),
         getRoutes(),
@@ -50,11 +47,9 @@ export default function Orders() {
 
   const onSubmit = async (data) => {
     try {
-      // Convert values
       data.valueRs = Number(data.valueRs);
 
       if (editing) {
-        // Remove _id and __v from data as they are not allowed in the update payload
         const { _id, __v, ...updatePayload } = data;
         console.log("Data sent for update:", updatePayload);
         await updateOrder(editing._id, updatePayload);
@@ -65,12 +60,10 @@ export default function Orders() {
         );
         setEditing(null);
       } else {
-        // Create new order
         const response = await createOrder(data);
         setOrders([...orders, response.data]);
       }
 
-      // Reset form
       reset();
       setShowForm(false);
     } catch (err) {
@@ -83,10 +76,10 @@ export default function Orders() {
     setEditing(order);
     reset(order);
     setShowForm(true);
-    // Scroll to the form after it becomes visible
+
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100); // A small delay to ensure the form is rendered
+    }, 100);
   };
 
   const handleDelete = async (id) => {
@@ -130,7 +123,7 @@ export default function Orders() {
       </div>
 
       {showForm && (
-        <div className="form-container" ref={formRef}> {/* Attach the ref here */}
+        <div className="form-container" ref={formRef}>
           <h2>{editing ? "Edit Order" : "Add New Order"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
@@ -139,7 +132,7 @@ export default function Orders() {
                 id="orderId"
                 type="text"
                 {...register("orderId", { required: "Order ID is required" })}
-                disabled={editing} // Don't allow changing order ID when editing
+                disabled={editing}
               />
               {errors.orderId && (
                 <span className="error">{errors.orderId.message}</span>

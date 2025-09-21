@@ -1,4 +1,3 @@
-// src/pages/Routes.jsx
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getRoutes, createRoute, updateRoute, deleteRoute } from "../api";
@@ -9,7 +8,7 @@ export default function Routes() {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const formRef = useRef(null); // Create a ref for the form
+  const formRef = useRef(null);
 
   const {
     register,
@@ -18,7 +17,6 @@ export default function Routes() {
     formState: { errors },
   } = useForm();
 
-  // Load routes data
   useEffect(() => {
     fetchRoutes();
   }, []);
@@ -38,12 +36,10 @@ export default function Routes() {
 
   const onSubmit = async (data) => {
     try {
-      // Convert values to numbers
       data.distanceKm = Number(data.distanceKm);
       data.baseTimeMinutes = Number(data.baseTimeMinutes);
 
       if (editing) {
-        // Remove _id and __v from data as they are not allowed in the update payload
         const { _id, __v, ...updatePayload } = data;
         await updateRoute(editing._id, updatePayload);
         setRoutes(
@@ -53,12 +49,10 @@ export default function Routes() {
         );
         setEditing(null);
       } else {
-        // Create new route
         const response = await createRoute(data);
         setRoutes([...routes, response.data]);
       }
 
-      // Reset form
       reset();
       setShowForm(false);
     } catch (err) {
@@ -71,10 +65,10 @@ export default function Routes() {
     setEditing(route);
     reset(route);
     setShowForm(true);
-    // Scroll to the form after it becomes visible
+
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100); // A small delay to ensure the form is rendered
+    }, 100);
   };
 
   const handleDelete = async (id) => {
@@ -118,7 +112,7 @@ export default function Routes() {
       </div>
 
       {showForm && (
-        <div className="form-container" ref={formRef}> {/* Attach the ref here */}
+        <div className="form-container" ref={formRef}>
           <h2>{editing ? "Edit Route" : "Add New Route"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
@@ -127,7 +121,7 @@ export default function Routes() {
                 id="routeId"
                 type="text"
                 {...register("routeId", { required: "Route ID is required" })}
-                disabled={editing} // Don't allow changing route ID when editing
+                disabled={editing}
               />
               {errors.routeId && (
                 <span className="error">{errors.routeId.message}</span>
