@@ -14,6 +14,7 @@ import Simulation from "./pages/Simulation";
 import Drivers from "./pages/Drivers";
 import Routes from "./pages/Routes"; // This is our routes management component
 import Orders from "./pages/Orders";
+import SimulationDetails from "./pages/SimulationDetails"; // Import the new component
 import "./App.css";
 
 function App() {
@@ -40,6 +41,15 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Simulation />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/simulation/:id" // New route for simulation details
+                element={
+                  <PrivateRoute>
+                    <SimulationDetails />
                   </PrivateRoute>
                 }
               />

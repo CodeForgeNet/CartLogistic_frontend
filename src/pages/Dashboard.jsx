@@ -3,6 +3,27 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getLatestSimulation, getDrivers, getOrders, getRoutes } from "../api";
 import { Pie, Bar } from "react-chartjs-2";
+import {
+  Chart,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+} from "chart.js";
+
+// Register Chart.js components
+Chart.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+);
 
 export default function Dashboard() {
   const [latestSimulation, setLatestSimulation] = useState(null);
@@ -179,6 +200,48 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
+
+            {/* Order Details Table (inside latest-simulation) */}
+            {latestSimulation.perOrder && latestSimulation.perOrder.length > 0 && (
+              <div className="order-details-section">
+                <h3>Simulation Order Details</h3>
+                <table className="orders-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Value (₹)</th>
+                      <th>Driver</th>
+                      <th>Status</th>
+                      <th>Profit (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {latestSimulation.perOrder.slice(0, 5).map((order) => (
+                      <tr key={order.orderId}>
+                        <td>{order.orderId}</td>
+                        <td>{order.valueRs}</td>
+                        <td>{order.assignedDriver}</td>
+                        <td>
+                          <span
+                            className={
+                              order.onTime ? "status-on-time" : "status-late"
+                            }
+                          >
+                            {order.onTime ? "On Time" : "Late"}
+                          </span>
+                        </td>
+                        <td>{order.profit.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {latestSimulation.perOrder.length > 5 && (
+                  <Link to={`/simulation/${latestSimulation._id}`} className="button view-all-button">
+                    View All Orders
+                  </Link>
+                )}
+              </div>
+            )}
 
             <Link to="/simulation" className="button run-new-button">
               Run New Simulation

@@ -62,5 +62,6 @@ export const deleteOrder = (id) => api.delete(`/orders/${id}`);
 export const runSimulation = (params) => api.post("/simulate", params);
 export const getSimulations = () => api.get("/simulate");
 export const getLatestSimulation = () => api.get("/simulate/latest");
+export const getSimulationById = (id) => api.get(`/simulate/${id}`);
 
 export default api;
