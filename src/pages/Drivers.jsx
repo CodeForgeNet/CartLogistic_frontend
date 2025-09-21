@@ -1,5 +1,5 @@
 // src/pages/Drivers.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getDrivers, createDriver, updateDriver, deleteDriver } from "../api";
 
@@ -9,6 +9,8 @@ export default function Drivers() {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  const formRef = useRef(null);
 
   const {
     register,
@@ -21,6 +23,13 @@ export default function Drivers() {
   useEffect(() => {
     fetchDrivers();
   }, []);
+
+  // Scroll to form when showForm becomes true
+  useEffect(() => {
+    if (showForm && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showForm]);
 
   const fetchDrivers = async () => {
     setLoading(true);
@@ -50,6 +59,10 @@ export default function Drivers() {
 
     try {
       if (editing) {
+        // Remove _id from data for update operation
+        delete data._id;
+        // Remove __v from data for update operation
+        delete data.__v;
         // Update existing driver
         await updateDriver(editing._id, data);
         setDrivers(
@@ -62,18 +75,29 @@ export default function Drivers() {
         setDrivers([...drivers, response.data]);
       }
 
+      fetchDrivers(); // Re-fetch and re-sort the drivers
+
       // Reset form
       reset();
       setShowForm(false);
     } catch (err) {
       console.error("Error saving driver:", err);
-      setError(err.response?.data?.error || "Failed to save driver");
+      setError(
+        err.response?.data?.details
+          ? JSON.stringify(err.response.data.details)
+          : err.response?.data?.error || "Failed to save driver"
+      );
     }
   };
 
   const handleEdit = (driver) => {
     setEditing(driver);
-    reset(driver);
+    // Prepare driver data for form, converting past7DayHours array to a comma-separated string
+    const formData = {
+      ...driver,
+      past7DayHoursInput: driver.past7DayHours ? driver.past7DayHours.join(',') : '',
+    };
+    reset(formData);
     setShowForm(true);
   };
 
@@ -118,7 +142,7 @@ export default function Drivers() {
       </div>
 
       {showForm && (
-        <div className="form-container">
+        <div className="form-container" ref={formRef}>
           <h2>{editing ? "Edit Driver" : "Add New Driver"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">

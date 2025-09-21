@@ -1,5 +1,5 @@
 // src/pages/Routes.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { getRoutes, createRoute, updateRoute, deleteRoute } from "../api";
 
@@ -9,6 +9,7 @@ export default function Routes() {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const formRef = useRef(null); // Create a ref for the form
 
   const {
     register,
@@ -42,10 +43,13 @@ export default function Routes() {
       data.baseTimeMinutes = Number(data.baseTimeMinutes);
 
       if (editing) {
-        // Update existing route
-        await updateRoute(editing._id, data);
+        // Remove _id and __v from data as they are not allowed in the update payload
+        const { _id, __v, ...updatePayload } = data;
+        await updateRoute(editing._id, updatePayload);
         setRoutes(
-          routes.map((r) => (r._id === editing._id ? { ...r, ...data } : r))
+          routes.map((r) =>
+            r._id === editing._id ? { ...r, ...updatePayload } : r
+          )
         );
         setEditing(null);
       } else {
@@ -58,7 +62,7 @@ export default function Routes() {
       reset();
       setShowForm(false);
     } catch (err) {
-      console.error("Error saving route:", err);
+      console.error("Error saving route:", err.response?.data || err);
       setError(err.response?.data?.error || "Failed to save route");
     }
   };
@@ -67,6 +71,10 @@ export default function Routes() {
     setEditing(route);
     reset(route);
     setShowForm(true);
+    // Scroll to the form after it becomes visible
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100); // A small delay to ensure the form is rendered
   };
 
   const handleDelete = async (id) => {
@@ -110,7 +118,7 @@ export default function Routes() {
       </div>
 
       {showForm && (
-        <div className="form-container">
+        <div className="form-container" ref={formRef}> {/* Attach the ref here */}
           <h2>{editing ? "Edit Route" : "Add New Route"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">

@@ -1,5 +1,5 @@
 // src/pages/Orders.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
   getOrders,
@@ -11,11 +11,12 @@ import {
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
-  const [routes, setRoutes] = useState([]);
+  const [routes, setRoutes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const formRef = useRef(null); // Create a ref for the form
 
   const {
     register,
@@ -53,10 +54,14 @@ export default function Orders() {
       data.valueRs = Number(data.valueRs);
 
       if (editing) {
-        // Update existing order
-        await updateOrder(editing._id, data);
+        // Remove _id and __v from data as they are not allowed in the update payload
+        const { _id, __v, ...updatePayload } = data;
+        console.log("Data sent for update:", updatePayload);
+        await updateOrder(editing._id, updatePayload);
         setOrders(
-          orders.map((o) => (o._id === editing._id ? { ...o, ...data } : o))
+          orders.map((o) =>
+            o._id === editing._id ? { ...o, ...updatePayload } : o
+          )
         );
         setEditing(null);
       } else {
@@ -69,7 +74,7 @@ export default function Orders() {
       reset();
       setShowForm(false);
     } catch (err) {
-      console.error("Error saving order:", err);
+      console.error("Error saving order:", err.response?.data || err);
       setError(err.response?.data?.error || "Failed to save order");
     }
   };
@@ -78,6 +83,10 @@ export default function Orders() {
     setEditing(order);
     reset(order);
     setShowForm(true);
+    // Scroll to the form after it becomes visible
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100); // A small delay to ensure the form is rendered
   };
 
   const handleDelete = async (id) => {
@@ -87,7 +96,7 @@ export default function Orders() {
       await deleteOrder(id);
       setOrders(orders.filter((o) => o._id !== id));
     } catch (err) {
-      console.error("Error deleting order:", err);
+      console.error("Error deleting order:", err.response?.data || err);
       setError(err.response?.data?.error || "Failed to delete order");
     }
   };
@@ -121,7 +130,7 @@ export default function Orders() {
       </div>
 
       {showForm && (
-        <div className="form-container">
+        <div className="form-container" ref={formRef}> {/* Attach the ref here */}
           <h2>{editing ? "Edit Order" : "Add New Order"}</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
