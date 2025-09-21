@@ -53,13 +53,14 @@ export default function Drivers() {
 
     try {
       if (editing) {
-        delete data._id;
+        // Exclude createdAt and updatedAt from the payload
+        const { createdAt, updatedAt, ...driverData } = data;
+        delete driverData._id;
+        delete driverData.__v;
 
-        delete data.__v;
-
-        await updateDriver(editing._id, data);
+        await updateDriver(editing._id, driverData);
         setDrivers(
-          drivers.map((d) => (d._id === editing._id ? { ...d, ...data } : d))
+          drivers.map((d) => (d._id === editing._id ? { ...d, ...driverData } : d))
         );
         setEditing(null);
       } else {
