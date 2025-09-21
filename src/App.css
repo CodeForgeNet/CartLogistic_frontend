@@ -1,3 +1,22 @@
+/* Simulation submit button fix */
+.submit-button {
+  background-color: var(--primary-color);
+  color: #fff !important;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 1rem;
+}
+
+.submit-button:disabled {
+  background-color: #bdbdbd;
+  color: #fff !important;
+  cursor: not-allowed;
+}
 .dashboard-page {
   display: flex;
   flex-direction: column;
@@ -247,6 +266,7 @@ h2 {
   text-decoration: none;
   display: inline-block;
   margin: 0.3rem;
+  color: #fff !important;
 }
 
 .add-button {
