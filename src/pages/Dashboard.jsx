@@ -232,7 +232,7 @@ export default function Dashboard() {
                   {latestSimulation.perOrder.length > 5 && (
                     <Link
                       to={`/simulation/${latestSimulation._id}`}
-                      className="button view-all-button"
+                      className="view-all-button"
                     >
                       View All Orders
                     </Link>

@@ -36,7 +36,7 @@ export default function SimulationDetails() {
           </tr>
         </thead>
         <tbody>
-          {simulation.perOrder.map(order => (
+          {simulation.perOrder.map((order) => (
             <tr key={order.orderId}>
               <td>{order.orderId}</td>
               <td>{order.valueRs}</td>
@@ -50,7 +50,9 @@ export default function SimulationDetails() {
         </tbody>
       </table>
 
-      <Link to="/dashboard" className="button">← Back to Dashboard</Link>
+      <Link to="/dashboard" className="view-all-button">
+        ← Back to Dashboard
+      </Link>
     </div>
   );
 }

@@ -1,3 +1,7 @@
+/* View All Orders link color fix */
+.view-all-button {
+  color: #1976d2 !important;
+}
 /* Simulation submit button fix */
 .submit-button {
   background-color: var(--primary-color);
@@ -464,9 +468,10 @@ tr:last-child td {
 }
 
 .summary-link {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
+  color: #1a237e;
+  text-decoration: underline;
+  font-weight: 700;
+  background: transparent;
 }
 
 .summary-link:hover {
